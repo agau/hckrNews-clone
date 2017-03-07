@@ -1,0 +1,69 @@
+﻿@model SearchModel
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    td { padding: 0px 12px 7px 0px;   }
+    a { color: black; text-decoration:none}
+    .padL12 { padding-left: 12px}
+     .padR12 { padding-right: 12px}
+    .b { font-weight: bold}
+    .subText { color: darkgrey; font-size: 12px}
+</style>
+
+<div>    
+    <div>
+        <form asp-controller="Home" asp-action="Index" id="frmNewsDate">
+            <label asp-for="NewsDate">Date:</label>
+            <input asp-for="NewsDate" value="@Model.NewsDate.ToString("yyyy-MM-dd")">
+            <input type="submit" class="padR12" />   
+            <button id="btnPrevDay">Prev Day</button>       
+            <button id="btnNextDay">Next Day</button>
+        </form>               
+    </div>
+    <br/>
+    <div>
+        <table>
+            @{  if (Model.SearchResults != null)
+                {
+                    foreach (NewsItem item in Model.SearchResults)
+                    {
+                        <tr>
+                            <td class=""><a href="http://news.ycombinator.com/item?id=@item.Id">@item.Comments</a></td>
+                            <td class="b">@item.Points</td>
+                            <td class=""><a href="@item.Link">@item.Link_Text <span class="subText">(@item.Source)</span></a></td>
+                        </tr>
+                    }
+                 }
+              }
+        </table>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btnNextDay').click(function () {
+                setNewsDate(true);
+            });
+
+            $('#btnPrevDay').click(function () {
+                setNewsDate(false);          
+            });
+        });
+
+        function setNewsDate(isNext)
+        {
+            var date = $('#NewsDate')[0].valueAsDate;
+
+            if (isNext)
+                date.setDate(date.getDate() + 1);
+            else
+                date.setDate(date.getDate() - 1);
+
+            $('#NewsDate')[0].valueAsDate = date;
+        }
+    </script>
+}
